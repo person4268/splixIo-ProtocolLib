@@ -40,7 +40,7 @@ class Server extends EventEmitter {
             connection.on("message", (message)=>{
                 if(message.type === "binary") { //Idk why I check this
                     //Process message
-                    msgHandler(server,client, message);
+                    msgHandler(this,client, message);
                 }
             });
         });
@@ -217,5 +217,7 @@ function msgHandler(server, client, message) {
 module.exports = {
     Server: Server,
     setDebug: setDebug,
-    getStartingVars: getStartingVars
+    getStartingVars: getStartingVars,
+    Player: Player,
+    Client: Client
 }
