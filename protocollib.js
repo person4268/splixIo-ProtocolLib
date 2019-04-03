@@ -1,4 +1,5 @@
-const WebSocketServer = require('websocket');
+const WebSocketServer = require('websocket').server;
+const msgHandler = require("./msghandler.js");
 
 class Client { //Class just incase for the future
     constructor(Connection) {
@@ -8,7 +9,7 @@ class Client { //Class just incase for the future
 
 class Server {
     constructor(Http) {
-        this.http = http;
+        this.http = Http;
         this.clients = [];
         this.socketServer = new WebSocketServer({httpServer: this.http}); //Handle websocket connections
 
@@ -19,8 +20,9 @@ class Server {
             this.clients.push(client);
 
             connection.on("message", (message)=>{
-                if(message.type === "binary") {
+                if(message.type === "binary") { //Idk why I check this
                     //Process message
+                    msgHandler(client, message);
                 }
             });
         });

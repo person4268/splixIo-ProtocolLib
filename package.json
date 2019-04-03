@@ -7,7 +7,7 @@
     },
     "readmeFilename": "README.md",
     "license": "MIT",
-    "repository":{
+    "repository": {
         "type": "git",
         "url": "https://github.com/person4268/splixIo-ProtocolLib/"
     }
