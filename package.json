@@ -3,6 +3,7 @@
     "description": "Library for splix.io protocol",
     "version": "0.0.1",
     "dependencies": {
+        "utf8": "^3.0.0",
         "websocket": "^1.0.28"
     },
     "readmeFilename": "README.md",
