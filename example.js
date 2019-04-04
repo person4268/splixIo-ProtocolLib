@@ -15,6 +15,8 @@ thing.on("READY",
  * @param {pl.Client} client 
  */
 function(player, data, client) {
-    onsole.log(`${player.username} is ready!`);
-    pl
+    console.log(`${player.username} is ready!`);
+    let startVars = pl.getStartingVars();
+    player.setPlayerPos(startVars.x, startVars.y);
+    player.setTrail(startVars.x, startVars.y);
 })

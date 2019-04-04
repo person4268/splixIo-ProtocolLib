@@ -93,6 +93,7 @@ class Player {
         this.client = Client;
         this.username = "";
         this.usernameRaw = [];
+        this.direction = ids.directions.UP;
         this.version = 0;
         this.connection = this.client.connection; 
     }
@@ -121,7 +122,7 @@ class Player {
         var xBuf = Buffer.from(fixedX);
         var yBuf = Buffer.from(fixedY);
     
-        this.send(sendAction.SET_TRAIL, Buffer.concat([this.id, xBuf, yBuf]));
+        this.send(ids.sendAction.SET_TRAIL, Buffer.concat([this.id, xBuf, yBuf]));
     
     
     }
@@ -144,7 +145,7 @@ class Player {
         var yBuf = Buffer.from(fixedY);
         var dirBuf = Buffer.from([direction]);
     
-        this.send(sendAction.PLAYER_POS, Buffer.concat([xBuf, yBuf, this.id, dirBuf]))
+        this.send(ids.sendAction.PLAYER_POS, Buffer.concat([xBuf, yBuf, this.id, dirBuf]))
     
     }
     
@@ -154,7 +155,7 @@ class Player {
  * Generate random directions and positions to spawn a player. 
  */
 function getStartingVars() {
-    return {x: 100, y: 100, direction: directions.UP}; //Static for temporary reasons
+    return {x: 100, y: 100, direction: ids.directions.UP}; //Static for temporary reasons
 }
 /**
  * Creates an internal representation of a player. Seperate from the connection. 
@@ -203,6 +204,7 @@ function msgHandler(server, client, message) {
             player.id = Buffer.from(intToBytes(0, 2)); //Temporaily, all players have an id of 0
             debugLog(`Set [${player.id[0]},${player.id[1]}]'s username to ${player.username}`);
             break;
+
         case "READY":
             player.send(ids.sendAction.READY); //Tells client to load map. 
             break;
@@ -212,6 +214,9 @@ function msgHandler(server, client, message) {
     
 }
 
+//Notetaking lol
+//Leaderboard
+//1,2: Amount of players in server
 
 
 module.exports = {
