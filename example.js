@@ -1,6 +1,7 @@
 //Used for testing various functions; used only in development, plz ignore
 
 const pl = require("./protocollib.js");
+const ids = require("./ids.js");
 pl.setDebug(true);
 const http = require("http");
 
@@ -17,6 +18,6 @@ thing.on("READY",
 function(player, data, client) {
     console.log(`${player.username} is ready!`);
     let startVars = pl.getStartingVars();
-    player.setPlayerPos(startVars.x, startVars.y);
+    player.setPlayerPos(startVars.x, startVars.y, startVars.direction);
     player.setTrail(startVars.x, startVars.y);
-})
+});

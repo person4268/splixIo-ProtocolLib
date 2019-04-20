@@ -1,7 +1,7 @@
 const WebSocketServer = require('websocket').server;
 const EventEmitter = require("events").EventEmitter;
 const ids = require("./ids");
-var players = [];
+var players = {};
 var debug = false;
 
 function setDebug(doIt) {
@@ -116,6 +116,7 @@ class Player {
      * @param {Number} y 
      */
     setTrail(x, y) {
+        this.trail = [x,y];
         var fixedX = intToBytes(x, 2);
         var fixedY = intToBytes(y, 2);
     
@@ -145,7 +146,7 @@ class Player {
         var yBuf = Buffer.from(fixedY);
         var dirBuf = Buffer.from([direction]);
     
-        this.send(ids.sendAction.PLAYER_POS, Buffer.concat([xBuf, yBuf, this.id, dirBuf]))
+        sendAll(ids.sendAction.PLAYER_POS, Buffer.concat([xBuf, yBuf, this.id, dirBuf]))
     
     }
     
@@ -153,6 +154,7 @@ class Player {
 }
 /**
  * Generate random directions and positions to spawn a player. 
+ * TODO: Randomly generate these(person4268)
  */
 function getStartingVars() {
     return {x: 100, y: 100, direction: ids.directions.UP}; //Static for temporary reasons
@@ -163,6 +165,24 @@ function getStartingVars() {
  */
 function createPlayer(client) {
     players[client] = new Player(client);
+}
+/**
+ * Sends a message to all connected clients
+ * @param {Number} command The command to send
+ * @param {Array} data The data to pass. 
+ */
+function sendAll(command, data=[]) {
+    //debugLog(`SENDALL ${getKeyByValue(ids.sendAction, command)} ${data.toString().split(",").join(" ".substr(1, data.length-1))}`); //Need to format data better. Doesn't seem to work correctly
+    debugLog("SENDALL", data)
+    let commandBuf = Buffer.alloc(1, command);
+    let dataBuf = Buffer.from(data);
+    let sendBuf = Buffer.concat([commandBuf, dataBuf]);
+
+    Object.keys(players).forEach((p)=>{
+        debugLog("Sendall Reached", p.username)
+        players[p].connection.sendBytes(sendBuf);
+    })
+
 }
 
 /**
@@ -204,6 +224,17 @@ function msgHandler(server, client, message) {
             player.id = Buffer.from(intToBytes(0, 2)); //Temporaily, all players have an id of 0
             debugLog(`Set [${player.id[0]},${player.id[1]}]'s username to ${player.username}`);
             break;
+        case "UPDATE_DIR":
+            player.setPlayerPos(player.position[0], player.position[1], data[0]);
+            break;
+        case "REQUEST_MY_TRAIL":
+            var fixedX = intToBytes(player.trail[0], 2);
+            var fixedY = intToBytes(player.trail[1], 2);
+    
+            var xBuf = Buffer.from(fixedX);
+            var yBuf = Buffer.from(fixedY);
+    
+            player.send(ids.sendAction.SET_TRAIL, Buffer.concat([player.id, xBuf, yBuf]));
 
         case "READY":
             player.send(ids.sendAction.READY); //Tells client to load map. 
