@@ -98,11 +98,11 @@ class Player {
         this.connection = this.client.connection; 
         this.trail = [];
     }
-    send(command, data = []) {
+    send(command, data = Buffer.from([])) {
         let inspected = require("util").inspect(data);
-        let inspected_cropped = inspected.substring(7+(data.length-1), inspected.length-1);
-        debugLog(`SEND ${this.username} ${commandStr} ${inspected_cropped}`);
-        delete inspected, inspected_cropped;
+        let inspected_cropped = inspected.substring(7+(data.length), inspected.length-1);
+        debugLog(`SEND ${this.username} ${getKeyByValue(ids.sendAction, command)} ${inspected_cropped}`);
+        inspected = undefined, inspected_cropped = undefined;
         
         let commandBuf = Buffer.alloc(1, command);
         let dataBuf = Buffer.from(data);
@@ -178,9 +178,9 @@ function createPlayer(client) {
  */
 function sendAll(command, data=[]) {
     let inspected = require("util").inspect(data);
-    let inspected_cropped = inspected.substring(7+(data.length-1), inspected.length-1);
-    debugLog(`SENDALL ${commandStr} ${inspected_cropped}`);
-    delete inspected, inspected_cropped; //Dont need them anymore. 
+    let inspected_cropped = inspected.substring(7+(data.length), inspected.length-1);
+    debugLog(`SENDALL ${getKeyByValue(ids.sendAction, command)} ${inspected_cropped}`);
+    inspected = undefined, inspected_cropped = undefined; //Dont need them anymore. 
 
     let commandBuf = Buffer.alloc(1, command);
     let dataBuf = Buffer.from(data);
@@ -211,9 +211,9 @@ function msgHandler(server, client, message) {
     var player = players[client];
 
     let inspected = require("util").inspect(data);
-    let inspected_cropped = inspected.substring(7+(data.length-1), inspected.length-1);
+    let inspected_cropped = inspected.substring(7+(data.length), inspected.length-1);
     debugLog(`RECV ${commandStr} ${inspected_cropped}`);
-    delete inspected, inspected_cropped; //Don't need them anymore. 
+    inspected = undefined, inspected_cropped = undefined; //Don't need them anymore. 
 
     server.emit(commandStr, player, data, client);
     switch(commandStr) {
