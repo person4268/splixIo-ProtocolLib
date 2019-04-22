@@ -96,9 +96,14 @@ class Player {
         this.direction = ids.directions.UP;
         this.version = 0;
         this.connection = this.client.connection; 
+        this.trail = [];
     }
     send(command, data = []) {
-        debugLog(`SEND ${getKeyByValue(ids.sendAction, command)} ${data.toString().split(",").join(" ".substr(1, data.length-1))}`); //Need to format data better. Doesn't seem to work correctly
+        let inspected = require("util").inspect(data);
+        let inspected_cropped = inspected.substring(7+(data.length-1), inspected.length-1);
+        debugLog(`SEND ${this.username} ${commandStr} ${inspected_cropped}`);
+        delete inspected, inspected_cropped;
+        
         let commandBuf = Buffer.alloc(1, command);
         let dataBuf = Buffer.from(data);
         let sendBuf = Buffer.concat([commandBuf, dataBuf]);
@@ -172,14 +177,16 @@ function createPlayer(client) {
  * @param {Array} data The data to pass. 
  */
 function sendAll(command, data=[]) {
-    //debugLog(`SENDALL ${getKeyByValue(ids.sendAction, command)} ${data.toString().split(",").join(" ".substr(1, data.length-1))}`); //Need to format data better. Doesn't seem to work correctly
-    debugLog("SENDALL", data)
+    let inspected = require("util").inspect(data);
+    let inspected_cropped = inspected.substring(7+(data.length-1), inspected.length-1);
+    debugLog(`SENDALL ${commandStr} ${inspected_cropped}`);
+    delete inspected, inspected_cropped; //Dont need them anymore. 
+
     let commandBuf = Buffer.alloc(1, command);
     let dataBuf = Buffer.from(data);
     let sendBuf = Buffer.concat([commandBuf, dataBuf]);
 
     Object.keys(players).forEach((p)=>{
-        debugLog("Sendall Reached", p.username)
         players[p].connection.sendBytes(sendBuf);
     })
 
@@ -203,9 +210,11 @@ function msgHandler(server, client, message) {
     }
     var player = players[client];
 
-    const inspected = require("util").inspect(data);
-    const inspected_cropped = inspected.substring(8, inspected.length-1);
+    let inspected = require("util").inspect(data);
+    let inspected_cropped = inspected.substring(7+(data.length-1), inspected.length-1);
     debugLog(`RECV ${commandStr} ${inspected_cropped}`);
+    delete inspected, inspected_cropped; //Don't need them anymore. 
+
     server.emit(commandStr, player, data, client);
     switch(commandStr) {
         case "VERSION": //Version. Just an int of 3 bytes. 
