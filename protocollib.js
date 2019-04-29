@@ -245,6 +245,7 @@ function msgHandler(server, client, message) {
     
             player.send(ids.sendAction.SET_TRAIL, Buffer.concat([player.id, xBuf, yBuf])); //And finally, concat the buffers and send the message
 
+            break;
         case "READY":
             player.send(ids.sendAction.READY); //Tells client to load map. 
             break;
