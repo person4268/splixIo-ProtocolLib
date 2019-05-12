@@ -237,14 +237,15 @@ function msgHandler(server, client, message) {
             player.setPlayerPos(player.position[0], player.position[1], data[0]);
             break;
         case "REQUEST_MY_TRAIL":
-            var fixedX = intToBytes(player.trail[0], 2);
+            var fixedX = intToBytes(player.trail[0], 2); //Format x and y vars
             var fixedY = intToBytes(player.trail[1], 2);
     
-            var xBuf = Buffer.from(fixedX);
+            var xBuf = Buffer.from(fixedX); //And buffer them
             var yBuf = Buffer.from(fixedY);
     
-            player.send(ids.sendAction.SET_TRAIL, Buffer.concat([player.id, xBuf, yBuf]));
+            player.send(ids.sendAction.SET_TRAIL, Buffer.concat([player.id, xBuf, yBuf])); //And finally, concat the buffers and send the message
 
+            break;
         case "READY":
             player.send(ids.sendAction.READY); //Tells client to load map. 
             break;
@@ -253,10 +254,6 @@ function msgHandler(server, client, message) {
     }
     
 }
-
-//Notetaking lol
-//Leaderboard
-//1,2: Amount of players in server
 
 
 module.exports = {
