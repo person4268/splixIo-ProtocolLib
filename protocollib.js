@@ -65,7 +65,7 @@ function bytesToInt() {
     return e
 }
 /**
- * Converts an integer to bytes. 
+ * Converts an integer to bytes. Adapted from splix source
  * For example, giving 1, 2 would give you [0x00, 0x01] as you want 2 bytes and the number 1
  * @param {Number} data 
  * @param {Number} length 
