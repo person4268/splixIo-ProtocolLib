@@ -54,7 +54,7 @@ class Server extends EventEmitter {
 //And I can't understand whats its doing becuase it's minified
 
 /**
- * Converts given bytes to an integer
+ * Converts given bytes to an integer. Adapted from splix source. 
  * Example: [0x00, 0x01] would return 1, converted from 16 bits. 
  */
 function bytesToInt() {
