@@ -43,6 +43,12 @@ class Server extends EventEmitter {
                     msgHandler(this,client, message);
                 }
             });
+            connection.on("close", (reasonCode, description)=>{
+                debugLog("Connection Closed,", reasonCode, description);
+                if(players[client]) {
+                    players[client] = undefined; //Delete player if we got that far
+                }
+            });
         });
     }
 }
@@ -58,7 +64,7 @@ class Server extends EventEmitter {
  * Example: [0x00, 0x01] would return 1, converted from 16 bits. 
  */
 function bytesToInt() {
-    for (let e,t = 0, n = arguments.length - 1; 0 <= n; n--) {
+    for (var e,t = 0, n = arguments.length - 1; 0 <= n; n--) {
         e = (e | (255 & arguments[n]) << t >>> 0) >>> 0,
             t += 8;
     }
@@ -98,6 +104,11 @@ class Player {
         this.connection = this.client.connection; 
         this.trail = [];
     }
+    /**
+     * Sends bytes to client. 
+     * @param {Number} command Command to send
+     * @param {Buffer} data  Data
+     */
     send(command, data = Buffer.from([])) {
         let inspected = require("util").inspect(data);
         let inspected_cropped = inspected.substring(8+(data.length), inspected.length-1);

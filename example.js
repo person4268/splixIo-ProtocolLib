@@ -10,7 +10,7 @@ server.listen(8000);
 const thing = new pl.Server(server);
 thing.on("READY", 
 /**
- * 
+ * Really just here for variable completion
  * @param {pl.Player} player 
  * @param {Uint8Array} data 
  * @param {pl.Client} client 
