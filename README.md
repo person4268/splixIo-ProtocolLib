@@ -1,5 +1,5 @@
 # splixIo-ProtocolLib
-# VERY INCOMPLETE
+# VERY INCOMPLETE; basically useless right now
 
 
 A sort of library for interacting with splix.io's protocol at a *slightly* higher level
